@@ -8,8 +8,8 @@ interface Componente {
   nombre: string;
   descripcion: string;
   precio: number;
-  imagen_url: string;
   categoria_id: number;
+  imagen_url: string;
   categoria_nombre: string;
 }
 
@@ -22,8 +22,10 @@ interface ComponenteCardProps {
 export default function ComponenteCard({ componente, onSelect, isSelected }: ComponenteCardProps) {
   return (
     <div 
-      className={`flex flex-col bg-gray-800/80 rounded-xl shadow-lg p-6 gap-4 border transition-all cursor-pointer
-        ${isSelected ? 'border-cyan-400 scale-105' : 'border-gray-700 hover:border-cyan-400'}`}
+      className={`flex flex-col bg-gray-800/80 rounded-xl p-6 gap-4 border transition-all cursor-pointer
+        ${isSelected 
+          ? 'border-cyan-400 scale-105 shadow-[0_0_20px_rgba(103,232,249,0.6)]' 
+          : 'border-gray-700 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(103,232,249,0.4)]'}`}
       onClick={() => onSelect(componente)}
     >
       <div className="relative w-full h-48 mb-4">

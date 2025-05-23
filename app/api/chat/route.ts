@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Validar API key
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_KEY = process.env.GOOGLE_API_KEY;
 if (!GEMINI_API_KEY) {
-  throw new Error('GEMINI_API_KEY no está configurada en las variables de entorno');
+  throw new Error('GOOGLE_API_KEY no está configurada en las variables de entorno');
 }
 
 // Inicializar Gemini

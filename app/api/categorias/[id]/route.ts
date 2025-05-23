@@ -11,21 +11,15 @@ interface Categoria extends RowDataPacket {
   nombre: string;
 }
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
 export async function DELETE(
   request: NextRequest,
-  props: Props
+  { params }: { params: { id: string } }
 ) {
   try {
     // Primero verificar si hay componentes asociados
     const [componentes] = await pool.query<CountResult[]>(
       'SELECT COUNT(*) as count FROM componentes WHERE categoria_id = ?',
-      [props.params.id]
+      [params.id]
     );
 
     if (componentes[0].count > 0) {
@@ -39,7 +33,7 @@ export async function DELETE(
     }
 
     // Si no hay componentes asociados, eliminar la categoría
-    await pool.query('DELETE FROM categorias WHERE id = ?', [props.params.id]);
+    await pool.query('DELETE FROM categorias WHERE id = ?', [params.id]);
     
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -53,12 +47,12 @@ export async function DELETE(
 
 export async function GET(
   request: NextRequest,
-  props: Props
+  { params }: { params: { id: string } }
 ) {
   try {
     const [rows] = await pool.query<Categoria[]>(
       'SELECT * FROM categorias WHERE id = ?',
-      [props.params.id]
+      [params.id]
     );
 
     if (!rows[0]) {
@@ -80,7 +74,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  props: Props
+  { params }: { params: { id: string } }
 ) {
   try {
     const { nombre } = await request.json();
@@ -94,7 +88,7 @@ export async function PUT(
 
     const [result] = await pool.query<ResultSetHeader>(
       'UPDATE categorias SET nombre = ? WHERE id = ?',
-      [nombre, props.params.id]
+      [nombre, params.id]
     );
 
     if (result.affectedRows === 0) {
@@ -106,7 +100,7 @@ export async function PUT(
 
     return NextResponse.json({ 
       success: true, 
-      data: { id: props.params.id, nombre } 
+      data: { id: params.id, nombre } 
     });
   } catch (error) {
     console.error('Error al actualizar categoría:', error);

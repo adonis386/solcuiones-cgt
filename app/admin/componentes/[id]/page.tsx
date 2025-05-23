@@ -21,7 +21,6 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
   const resolvedParams = use(params);
   const router = useRouter();
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [componente, setComponente] = useState<Componente | null>(null);
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -50,7 +49,6 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
       const response = await fetch(`/api/componentes/${resolvedParams.id}`);
       const data = await response.json();
       if (data.success) {
-        setComponente(data.data);
         setFormData({
           nombre: data.data.nombre,
           descripcion: data.data.descripcion,

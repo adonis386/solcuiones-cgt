@@ -3,11 +3,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
-interface Categoria {
-  id: number;
-  nombre: string;
-}
-
 export default function EditarCategoria({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [nombre, setNombre] = useState('');

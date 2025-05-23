@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 interface Categoria {
@@ -24,11 +24,7 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'categorias' | 'componentes'>('categorias');
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    fetchData();
-  }, [activeTab]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       if (activeTab === 'categorias') {
@@ -48,7 +44,11 @@ export default function AdminPage() {
       console.error('Error al cargar datos:', error);
     }
     setIsLoading(false);
-  };
+  }, [activeTab]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleDelete = async (id: number, type: 'categoria' | 'componente') => {
     if (!confirm('¿Estás seguro de que deseas eliminar este elemento?')) return;

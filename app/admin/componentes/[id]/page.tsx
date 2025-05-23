@@ -8,8 +8,14 @@ interface Categoria {
   nombre: string;
 }
 
-export default function EditarComponente({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params);
+interface PageProps {
+  params: {
+    id: string;
+  };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default function EditarComponente({ params }: PageProps) {
   const router = useRouter();
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [formData, setFormData] = useState({
@@ -38,7 +44,7 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
 
     const fetchComponente = async () => {
       try {
-        const response = await fetch(`/api/componentes/${resolvedParams.id}`);
+        const response = await fetch(`/api/componentes/${params.id}`);
         const data = await response.json();
         if (data.success) {
           setFormData({
@@ -57,20 +63,20 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
     };
 
     fetchCategorias();
-    if (resolvedParams.id !== 'nuevo') {
+    if (params.id !== 'nuevo') {
       fetchComponente();
     } else {
       setIsLoading(false);
     }
-  }, [resolvedParams.id]);
+  }, [params.id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      const method = resolvedParams.id === 'nuevo' ? 'POST' : 'PUT';
-      const response = await fetch(`/api/componentes${resolvedParams.id === 'nuevo' ? '' : `/${resolvedParams.id}`}`, {
+      const method = params.id === 'nuevo' ? 'POST' : 'PUT';
+      const response = await fetch(`/api/componentes${params.id === 'nuevo' ? '' : `/${params.id}`}`, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -116,7 +122,7 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 p-6">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-cyan-400 mb-8">
-          {resolvedParams.id === 'nuevo' ? 'Nuevo Componente' : 'Editar Componente'}
+          {params.id === 'nuevo' ? 'Nuevo Componente' : 'Editar Componente'}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">

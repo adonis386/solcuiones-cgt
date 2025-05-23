@@ -251,6 +251,22 @@ export default function ArmarPC() {
     setIsModalOpen(true);
   };
 
+  const getWhatsAppMessage = () => {
+    if (Object.keys(componentesSeleccionados).length === 0) {
+      return "Hola soluciones CGT! Estoy interesado en armar una PC.";
+    }
+
+    let message = "Hola soluciones CGT! Quiero armar una PC con:\n\n";
+
+    Object.values(componentesSeleccionados).forEach(comp => {
+      message += `- ${comp.categoria_nombre}: ${comp.nombre} ($${comp.precio})\n`;
+    });
+
+    message += `\nPresupuesto total estimado: $${presupuestoTotal.toLocaleString()}`;;
+
+    return encodeURIComponent(message);
+  };
+
   const getIconForCategory = (nombre: string) => {
     switch (nombre.toLowerCase()) {
       case 'procesadores':
@@ -366,13 +382,13 @@ export default function ArmarPC() {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-col sm:flex-row">
             <div className="text-white/80">
               {Object.keys(componentesSeleccionados).length} de {categorias.length} componentes seleccionados
             </div>
             {Object.keys(componentesSeleccionados).length === categorias.length && (
               <a
-                href="https://wa.link/9lsd7l"
+                href={`https://wa.link/9lsd7l?text=${getWhatsAppMessage()}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"

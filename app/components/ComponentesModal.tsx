@@ -1,7 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ComponenteCard from './ComponenteCard';
+
+interface Componente {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  categoria_id: number;
+  imagen_url: string;
+}
 
 interface ComponentesModalProps {
   isOpen: boolean;
@@ -10,8 +19,8 @@ interface ComponentesModalProps {
     id: number;
     nombre: string;
   } | null;
-  onSelectComponente: (componente: any) => void;
-  componentesSeleccionados: Record<number, any>;
+  onSelectComponente: (componente: Componente) => void;
+  componentesSeleccionados: Record<number, Componente>;
 }
 
 export default function ComponentesModal({
@@ -21,16 +30,10 @@ export default function ComponentesModal({
   onSelectComponente,
   componentesSeleccionados
 }: ComponentesModalProps) {
-  const [componentes, setComponentes] = useState<any[]>([]);
+  const [componentes, setComponentes] = useState<Componente[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && categoria) {
-      fetchComponentes();
-    }
-  }, [isOpen, categoria]);
-
-  const fetchComponentes = async () => {
+  const fetchComponentes = useCallback(async () => {
     if (!categoria) return;
     
     setIsLoading(true);
@@ -44,7 +47,13 @@ export default function ComponentesModal({
       console.error('Error al cargar componentes:', error);
     }
     setIsLoading(false);
-  };
+  }, [categoria]);
+
+  useEffect(() => {
+    if (isOpen && categoria) {
+      fetchComponentes();
+    }
+  }, [isOpen, categoria, fetchComponentes]);
 
   if (!isOpen || !categoria) return null;
 

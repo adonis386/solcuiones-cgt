@@ -24,6 +24,16 @@ Características clave:
 
 Cuando el usuario te pregunte, responde de manera natural y conversacional, como lo haría un experto en una tienda de computadoras.`;
 
+interface Componente {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  categoria_id: number;
+  imagen_url: string;
+  categoria_nombre: string;
+}
+
 export async function POST(request: Request) {
   try {
     const { message, presupuesto, history, componentes } = await request.json();
@@ -36,7 +46,7 @@ export async function POST(request: Request) {
         if (categoryComponents.length > 0) {
           // Asumir que el primer componente tiene el nombre de la categoría
           inventoryContext += `Categoría: ${categoryComponents[0].categoria_nombre}\n`;
-          categoryComponents.forEach((comp: any) => {
+          categoryComponents.forEach((comp: Componente) => {
             inventoryContext += `- ${comp.nombre} ($${comp.precio})\n  Descripción: ${comp.descripcion}\n`;
           });
           inventoryContext += '\n'; // Agregar una línea en blanco entre categorías

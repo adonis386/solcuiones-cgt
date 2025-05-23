@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import ComponentesModal from "../components/ComponentesModal";
-import ChatBot from "../components/ChatBot";
 import Image from "next/image";
 
 interface Categoria {

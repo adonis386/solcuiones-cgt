@@ -21,6 +21,14 @@ const config: Config = {
           '100%': { opacity: '1' },
         },
       },
+      fontFamily: {
+        sans: ['var(--font-turret-road)'],
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
     },
   },
   plugins: [],

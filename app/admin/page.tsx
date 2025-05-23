@@ -28,7 +28,7 @@ export default function AdminPage() {
     setIsLoading(true);
     try {
       if (activeTab === 'categorias') {
-        const response = await fetch('/api/test-db');
+        const response = await fetch('/api/categorias');
         const data = await response.json();
         if (data.success) {
           setCategorias(data.data);

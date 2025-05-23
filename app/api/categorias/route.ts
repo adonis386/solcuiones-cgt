@@ -24,8 +24,8 @@ export async function GET() {
     },
     {
       id: 5,
-      nombre: "Almacenamiento",
-      descripcion: "Discos duros y unidades SSD"
+      nombre: "Cases",
+      descripcion: "Gabinetes para PC"
     }
   ];
 

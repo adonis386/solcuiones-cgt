@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import ComponentesModal from "../components/ComponentesModal";
 import ChatBot from "../components/ChatBot";
+import Image from "next/image";
 
 interface Categoria {
   id: number;
@@ -64,12 +65,29 @@ export default function ArmarPC() {
     setIsModalOpen(true);
   };
 
+  const getIconForCategory = (nombre: string) => {
+    switch (nombre.toLowerCase()) {
+      case 'procesadores':
+        return '/assets/icons/cpu.svg';
+      case 'tarjetas gráficas':
+        return '/assets/icons/gpu.svg';
+      case 'placas base':
+        return '/assets/icons/pc-tower.svg';
+      case 'memoria ram':
+        return '/assets/icons/ram.svg';
+      case 'cases':
+        return '/assets/icons/gear.svg';
+      default:
+        return '/assets/icons/gear.svg';
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 p-6">
-      <h2 className="text-3xl sm:text-4xl font-bold text-cyan-400 mt-8 mb-2 text-center animate-fade-in">
+    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-purple-600 via-purple-500 to-purple-400 dark:from-purple-700 dark:via-purple-600 dark:to-purple-500 p-6">
+      <h2 className="text-3xl sm:text-4xl font-bold text-white mt-8 mb-2 text-center animate-fade-in">
         Arma tu PC
       </h2>
-      <p className="text-gray-300 mb-8 text-center animate-fade-in delay-100">
+      <p className="text-white mb-8 text-center animate-fade-in delay-100">
         Selecciona un componente por cada categoría para comenzar a armar tu equipo.
       </p>
 
@@ -78,19 +96,21 @@ export default function ArmarPC() {
         {categorias.map((cat) => (
           <div
             key={cat.id}
-            className={`flex flex-col items-center bg-gray-800/80 rounded-xl shadow-lg p-6 gap-4 border transition-all cursor-pointer
-              ${componentesSeleccionados[cat.id] ? 'border-cyan-400' : 'border-gray-700 hover:border-cyan-400'}`}
+            className={`flex flex-col items-center bg-white/10 backdrop-blur-sm rounded-xl shadow-lg p-6 gap-4 border transition-all cursor-pointer
+              ${componentesSeleccionados[cat.id] ? 'border-white' : 'border-white/20 hover:border-white'}`}
             onClick={() => handleCategoriaClick(cat)}
           >
-            <span className="text-4xl">
-              {cat.nombre === 'Motherboard' ? '🖥️' :
-               cat.nombre === 'Tarjeta Gráfica' ? '🎮' :
-               cat.nombre === 'Procesador' ? '🧠' :
-               cat.nombre === 'Memoria RAM' ? '💾' : '🖴'}
-            </span>
+            <div className="w-16 h-16 relative">
+              <Image
+                src={getIconForCategory(cat.nombre)}
+                alt={cat.nombre}
+                fill
+                className="object-contain"
+              />
+            </div>
             <span className="text-lg font-semibold text-white">{cat.nombre}</span>
             {componentesSeleccionados[cat.id] && (
-              <span className="text-sm text-cyan-400">
+              <span className="text-sm text-white">
                 {componentesSeleccionados[cat.id].nombre}
               </span>
             )}
@@ -108,15 +128,15 @@ export default function ArmarPC() {
       />
 
       {/* Presupuesto Total */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-800/90 backdrop-blur-sm border-t border-gray-700 p-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-sm border-t border-white/20 p-4">
         <div className="max-w-2xl mx-auto flex justify-between items-center">
           <div className="text-white">
-            <span className="text-gray-400">Presupuesto Total:</span>
-            <span className="ml-2 text-xl font-bold text-cyan-400">
+            <span className="text-white/80">Presupuesto Total:</span>
+            <span className="ml-2 text-xl font-bold text-white">
               ${presupuestoTotal.toLocaleString()}
             </span>
           </div>
-          <div className="text-gray-400">
+          <div className="text-white/80">
             {Object.keys(componentesSeleccionados).length} de {categorias.length} componentes seleccionados
           </div>
         </div>

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import { turretRoad } from "./fonts";
 
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Soluciones CGT - Ensamblador de PC con IA",
-  description: "Ensambla tu PC ideal con ayuda de la inteligencia artificial. Elige los mejores componentes y ajusta tu presupuesto fácilmente.",
+  title: "Soluciones CGT",
+  description: "Arma tu PC ideal con ayuda de la inteligencia artificial",
 };
 
 export default function RootLayout({
@@ -14,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body className={`${turretRoad.variable} font-sans`}>{children}</body>
     </html>
   );
 }

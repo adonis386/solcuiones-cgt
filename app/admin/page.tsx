@@ -24,29 +24,29 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<'categorias' | 'componentes'>('categorias');
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        if (activeTab === 'categorias') {
-          const response = await fetch('/api/test-db');
-          const data = await response.json();
-          if (data.success) {
-            setCategorias(data.data);
-          }
-        } else {
-          const response = await fetch('/api/componentes');
-          const data = await response.json();
-          if (data.success) {
-            setComponentes(data.data);
-          }
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      if (activeTab === 'categorias') {
+        const response = await fetch('/api/test-db');
+        const data = await response.json();
+        if (data.success) {
+          setCategorias(data.data);
         }
-      } catch (error) {
-        console.error('Error al cargar datos:', error);
+      } else {
+        const response = await fetch('/api/componentes');
+        const data = await response.json();
+        if (data.success) {
+          setComponentes(data.data);
+        }
       }
-      setIsLoading(false);
-    };
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+    }
+    setIsLoading(false);
+  };
 
+  useEffect(() => {
     fetchData();
   }, [activeTab]);
 

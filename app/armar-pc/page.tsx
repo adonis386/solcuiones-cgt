@@ -25,6 +25,7 @@ export default function ArmarPC() {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<Categoria | null>(null);
   const [componentesSeleccionados, setComponentesSeleccionados] = useState<Record<number, Componente>>({});
   const [presupuestoTotal, setPresupuestoTotal] = useState(0);
+  const [presupuestoObjetivo, setPresupuestoObjetivo] = useState<number | ''>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -82,6 +83,18 @@ export default function ArmarPC() {
     }
   };
 
+  const handlePresupuestoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === '') {
+      setPresupuestoObjetivo('');
+    } else {
+      const number = parseInt(value.replace(/[^0-9]/g, ''));
+      if (!isNaN(number)) {
+        setPresupuestoObjetivo(number);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-purple-600 via-purple-500 to-purple-400 dark:from-purple-700 dark:via-purple-600 dark:to-purple-500 p-6">
       <h2 className="text-3xl sm:text-4xl font-bold text-white mt-8 mb-2 text-center animate-fade-in">
@@ -91,8 +104,28 @@ export default function ArmarPC() {
         Selecciona un componente por cada categoría para comenzar a armar tu equipo.
       </p>
 
+      {/* Presupuesto Input */}
+      <div className="w-full max-w-md mb-8 animate-fade-in delay-200">
+        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+          <label htmlFor="presupuesto" className="block text-white mb-2">
+            ¿Cuál es tu presupuesto?
+          </label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white">$</span>
+            <input
+              type="text"
+              id="presupuesto"
+              value={presupuestoObjetivo === '' ? '' : presupuestoObjetivo.toLocaleString()}
+              onChange={handlePresupuestoChange}
+              placeholder="Ingresa tu presupuesto"
+              className="w-full pl-8 pr-4 py-2 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-white"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Categorías */}
-      <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12 animate-fade-in delay-200">
+      <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12 animate-fade-in delay-300">
         {categorias.map((cat) => (
           <div
             key={cat.id}
@@ -135,6 +168,11 @@ export default function ArmarPC() {
             <span className="ml-2 text-xl font-bold text-white">
               ${presupuestoTotal.toLocaleString()}
             </span>
+            {presupuestoObjetivo && (
+              <span className={`ml-2 text-sm ${presupuestoTotal > presupuestoObjetivo ? 'text-red-400' : 'text-green-400'}`}>
+                ({((presupuestoTotal - presupuestoObjetivo) / presupuestoObjetivo * 100).toFixed(1)}% {presupuestoTotal > presupuestoObjetivo ? 'sobre' : 'bajo'} el presupuesto)
+              </span>
+            )}
           </div>
           <div className="text-white/80">
             {Object.keys(componentesSeleccionados).length} de {categorias.length} componentes seleccionados
@@ -143,7 +181,7 @@ export default function ArmarPC() {
       </div>
 
       {/* ChatBot */}
-      <ChatBot />
+      <ChatBot presupuestoObjetivo={presupuestoObjetivo} />
     </div>
   );
 } 

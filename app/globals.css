@@ -3,9 +3,16 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Electrolize';
-  src: url('/Electrolize-Regular.ttf') format('truetype');
+  font-family: 'Goldman';
+  src: url('/Goldman/Goldman-Regular.ttf') format('truetype');
   font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Goldman';
+  src: url('/Goldman/Goldman-Bold.ttf') format('truetype');
+  font-weight: bold;
   font-style: normal;
 }
 
@@ -37,7 +44,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Electrolize', Arial, Helvetica, sans-serif;
+  font-family: 'Goldman', sans-serif;
 }
 
 /* Estilos personalizados */

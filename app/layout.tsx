@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { turretRoad } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Soluciones CGT",
@@ -14,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${turretRoad.variable} font-sans`}>{children}</body>
+      <body className="font-goldman">{children}</body>
     </html>
   );
 }

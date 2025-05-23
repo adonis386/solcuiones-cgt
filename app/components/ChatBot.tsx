@@ -2,20 +2,24 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 
+interface ChatBotProps {
+  presupuestoObjetivo: number | '';
+}
+
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
 
-export default function ChatBot() {
+export default function ChatBot({ presupuestoObjetivo }: ChatBotProps) {
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -39,119 +43,115 @@ export default function ChatBot() {
         },
         body: JSON.stringify({
           message: userMessage,
-          chatHistory: messages,
+          presupuesto: presupuestoObjetivo,
+          history: messages
         }),
       });
 
       const data = await response.json();
       if (data.success) {
-        setMessages(prev => [...prev, { role: 'assistant', content: data.data.message }]);
-      } else {
-        throw new Error(data.error || 'Error al procesar el mensaje');
+        setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error al enviar mensaje:', error);
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: 'Lo siento, ha ocurrido un error. Por favor, intenta de nuevo.' 
+        content: 'Lo siento, hubo un error al procesar tu mensaje. Por favor, intenta de nuevo.' 
       }]);
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   };
 
   return (
-    <>
-      {/* Botón flotante del chat */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 bg-white text-purple-600 p-4 rounded-full shadow-lg hover:bg-purple-50 transition-all z-50 flex items-center gap-2"
-      >
-        {isOpen ? (
-          <>
-            <span className="hidden sm:inline">Cerrar Chat</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </>
-        ) : (
-          <>
-            <span className="hidden sm:inline">Abrir Chat</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </svg>
-          </>
-        )}
-      </button>
-
-      {/* Ventana del chat */}
-      <div className={`fixed bottom-20 right-4 w-[calc(100%-2rem)] sm:w-96 h-[600px] bg-white rounded-xl shadow-xl flex flex-col overflow-hidden transition-all duration-300 z-40 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full pointer-events-none'}`}>
-        {/* Header */}
-        <div className="p-4 bg-purple-600 text-white">
-          <h3 className="text-lg font-semibold">Asistente de PC</h3>
-          <p className="text-sm text-white">¿Necesitas ayuda para armar tu PC?</p>
-        </div>
-
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 ? (
-            <div className="text-center text-gray-600 mt-4">
-              <p>¡Hola! Soy tu asistente para armar PCs.</p>
-              <p className="mt-2">¿En qué puedo ayudarte hoy?</p>
-            </div>
-          ) : (
-            messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.role === 'user'
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  {message.content}
-                </div>
-              </div>
-            ))
-          )}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-gray-100 text-gray-800 rounded-lg p-3">
-                <div className="flex space-x-2">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100" />
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200" />
-                </div>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input */}
-        <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200">
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Escribe tu mensaje..."
-              className="flex-1 bg-gray-50 text-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-400"
-              disabled={isLoading}
-            />
+    <div className="fixed bottom-4 right-4 z-50">
+      {!isOpen ? (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="bg-purple-700 text-white p-4 rounded-full shadow-lg hover:bg-purple-600 transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+        </button>
+      ) : (
+        <div className="bg-gray-900/95 backdrop-blur-md rounded-xl shadow-2xl w-96 border border-gray-700">
+          {/* Header */}
+          <div className="bg-purple-700 p-4 rounded-t-xl flex justify-between items-center">
+            <h3 className="text-white font-semibold">Asistente Virtual</h3>
             <button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className="bg-purple-600 text-white rounded-lg px-4 py-2 hover:bg-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => setIsOpen(false)}
+              className="text-white hover:text-purple-200 transition-colors"
             >
-              Enviar
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
-        </form>
-      </div>
-    </>
+
+          {/* Messages */}
+          <div className="h-96 overflow-y-auto p-4 space-y-4">
+            {messages.length === 0 ? (
+              <div className="text-center text-gray-300">
+                <p>¡Hola! Soy tu asistente virtual.</p>
+                <p className="mt-2">Puedo ayudarte a elegir los mejores componentes según tu presupuesto.</p>
+                {presupuestoObjetivo && (
+                  <p className="mt-2 text-purple-400">
+                    Presupuesto objetivo: ${presupuestoObjetivo.toLocaleString()}
+                  </p>
+                )}
+              </div>
+            ) : (
+              messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-lg p-3 ${
+                      message.role === 'user'
+                        ? 'bg-purple-700 text-white'
+                        : 'bg-gray-800 text-gray-100'
+                    }`}
+                  >
+                    {message.content}
+                  </div>
+                </div>
+              ))
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <form onSubmit={handleSubmit} className="p-4 border-t border-gray-700">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Escribe tu mensaje..."
+                className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-gray-100 placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                disabled={isLoading}
+              />
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors disabled:opacity-50"
+              >
+                {isLoading ? (
+                  <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
   );
 } 

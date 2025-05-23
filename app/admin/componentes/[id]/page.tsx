@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use, useCallback } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Categoria {
@@ -8,10 +8,20 @@ interface Categoria {
   nombre: string;
 }
 
+interface Componente {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  categoria_id: number;
+  imagen_url: string;
+}
+
 export default function EditarComponente({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const router = useRouter();
   const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [componente, setComponente] = useState<Componente | null>(null);
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -22,7 +32,16 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchCategorias = useCallback(async () => {
+  useEffect(() => {
+    fetchCategorias();
+    if (resolvedParams.id !== 'nuevo') {
+      fetchComponente();
+    } else {
+      setIsLoading(false);
+    }
+  }, [resolvedParams.id]);
+
+  const fetchCategorias = async () => {
     try {
       const response = await fetch('/api/categorias');
       const data = await response.json();
@@ -33,13 +52,14 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
       console.error('Error al cargar categorías:', error);
       setError('Error al cargar las categorías');
     }
-  }, []);
+  };
 
-  const fetchComponente = useCallback(async () => {
+  const fetchComponente = async () => {
     try {
       const response = await fetch(`/api/componentes/${resolvedParams.id}`);
       const data = await response.json();
       if (data.success) {
+        setComponente(data.data);
         setFormData({
           nombre: data.data.nombre,
           descripcion: data.data.descripcion,
@@ -53,16 +73,7 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
       setError('Error al cargar el componente');
     }
     setIsLoading(false);
-  }, [resolvedParams.id]);
-
-  useEffect(() => {
-    fetchCategorias();
-    if (resolvedParams.id !== 'nuevo') {
-      fetchComponente();
-    } else {
-      setIsLoading(false);
-    }
-  }, [resolvedParams.id, fetchCategorias, fetchComponente]);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

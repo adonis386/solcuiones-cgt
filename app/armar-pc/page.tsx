@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import ComponenteCard from "../components/ComponenteCard";
 import ComponentesModal from "../components/ComponentesModal";
 import ChatBot from "../components/ChatBot";
 

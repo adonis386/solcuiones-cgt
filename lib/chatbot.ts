@@ -1,5 +1,5 @@
-import { ChatOpenAI } from "@langchain/openai";
-import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
+import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import pool from '@/lib/db';
 import { RowDataPacket } from 'mysql2';
 
@@ -11,6 +11,13 @@ interface Componente extends RowDataPacket {
   categoria_id: number;
   categoria_nombre: string;
 }
+
+// Configuración del modelo
+const model = new ChatGoogleGenerativeAI({
+  model: "gemini-2.0-flash",
+  maxOutputTokens: 2048,
+  apiKey: process.env.GOOGLE_API_KEY,
+});
 
 // Función para obtener componentes de la base de datos
 async function getComponentesFromDB(): Promise<Componente[]> {
@@ -46,31 +53,41 @@ Recuerda que debes recomendar componentes que:
 Los componentes disponibles son:`;
 
 // Función para obtener respuesta del chatbot
-export async function getChatbotResponse(
-  userMessage: string,
-  chatHistory: { role: string; content: string }[]
-): Promise<string> {
+export async function getChatbotResponse(message: string, history: { role: string; content: string }[] = []) {
   try {
-    const model = new ChatOpenAI({
-      modelName: "gpt-3.5-turbo",
-      temperature: 0.7,
-      maxTokens: 500,
-    });
+    // Obtener componentes de la base de datos
+    const componentes = await getComponentesFromDB();
+    
+    // Organizar componentes por categoría
+    const componentesPorCategoria = componentes.reduce((acc: Record<string, any[]>, comp) => {
+      if (!acc[comp.categoria_nombre]) {
+        acc[comp.categoria_nombre] = [];
+      }
+      acc[comp.categoria_nombre].push({
+        nombre: comp.nombre,
+        descripcion: comp.descripcion,
+        precio: comp.precio
+      });
+      return acc;
+    }, {});
 
+    // Crear resumen de componentes disponibles
+    const resumenComponentes = Object.entries(componentesPorCategoria)
+      .map(([categoria, comps]) => `${categoria}:\n${comps.map(c => `- ${c.nombre}: ${c.descripcion} ($${c.precio})`).join('\n')}`)
+      .join('\n\n');
+
+    // Preparar mensajes para el modelo
     const messages = [
-      new SystemMessage(systemPrompt),
-      ...chatHistory.map(msg => 
-        msg.role === "user" 
-          ? new HumanMessage(msg.content)
-          : new AIMessage(msg.content)
-      ),
-      new HumanMessage(userMessage)
+      { role: "system", content: `${systemPrompt}\n\n${resumenComponentes}` },
+      ...history,
+      { role: "user", content: message }
     ];
 
+    // Obtener respuesta del modelo
     const response = await model.invoke(messages);
-    return response.content.toString();
-  } catch (error: unknown) {
-    console.error("Error en el chatbot:", error);
-    return "Lo siento, hubo un error al procesar tu mensaje.";
+    return response.content;
+  } catch (error) {
+    console.error('Error al obtener respuesta del chatbot:', error);
+    throw error;
   }
 } 

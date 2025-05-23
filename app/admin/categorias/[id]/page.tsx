@@ -1,27 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+
+interface Categoria {
+  id: number;
+  nombre: string;
+}
 
 export default function EditarCategoria({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const [categoria, setCategoria] = useState<Categoria | null>(null);
   const [nombre, setNombre] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-
-  const fetchCategoria = useCallback(async () => {
-    try {
-      const response = await fetch(`/api/categorias/${params.id}`);
-      const data = await response.json();
-      if (data.success) {
-        setNombre(data.data.nombre);
-      }
-    } catch (error) {
-      console.error('Error al cargar categoría:', error);
-      setError('Error al cargar la categoría');
-    }
-    setIsLoading(false);
-  }, [params.id]);
 
   useEffect(() => {
     if (params.id !== 'nueva') {
@@ -29,7 +21,22 @@ export default function EditarCategoria({ params }: { params: { id: string } }) 
     } else {
       setIsLoading(false);
     }
-  }, [params.id, fetchCategoria]);
+  }, [params.id]);
+
+  const fetchCategoria = async () => {
+    try {
+      const response = await fetch(`/api/categorias/${params.id}`);
+      const data = await response.json();
+      if (data.success) {
+        setCategoria(data.data);
+        setNombre(data.data.nombre);
+      }
+    } catch (error) {
+      console.error('Error al cargar categoría:', error);
+      setError('Error al cargar la categoría');
+    }
+    setIsLoading(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -3,18 +3,15 @@
 import React from 'react';
 import Image from 'next/image';
 
-interface Componente {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  precio: number;
-  imagen_url: string;
-  categoria_id: number;
-}
-
 interface ComponenteCardProps {
-  componente: Componente;
-  onSelect: (componente: Componente) => void;
+  componente: {
+    id: number;
+    nombre: string;
+    descripcion: string;
+    precio: number;
+    imagen_url: string;
+  };
+  onSelect: (componente: any) => void;
   isSelected: boolean;
 }
 

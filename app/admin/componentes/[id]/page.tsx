@@ -8,15 +8,6 @@ interface Categoria {
   nombre: string;
 }
 
-interface Componente {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  precio: number;
-  categoria_id: number;
-  imagen_url: string;
-}
-
 export default function EditarComponente({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const router = useRouter();

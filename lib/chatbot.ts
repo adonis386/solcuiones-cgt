@@ -1,8 +1,6 @@
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
-import pool from '@/lib/db';
-import { RowDataPacket } from 'mysql2';
 
-interface Componente extends RowDataPacket {
+interface Componente {
   id: number;
   nombre: string;
   descripcion: string;
@@ -24,19 +22,26 @@ const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY,
 });
 
-// Función para obtener componentes de la base de datos
+// Función para obtener componentes (datos estáticos)
 async function getComponentesFromDB(): Promise<Componente[]> {
-  try {
-    const [rows] = await pool.query<Componente[]>(`
-      SELECT c.*, cat.nombre as categoria_nombre 
-      FROM componentes c
-      JOIN categorias cat ON c.categoria_id = cat.id
-    `);
-    return rows;
-  } catch (error) {
-    console.error('Error al obtener componentes:', error);
-    return [];
-  }
+  return [
+    {
+      id: 1,
+      nombre: "Procesador Intel i5",
+      descripcion: "Procesador de 6 núcleos y 12 hilos",
+      precio: 299.99,
+      categoria_id: 1,
+      categoria_nombre: "Procesadores"
+    },
+    {
+      id: 2,
+      nombre: "Tarjeta Gráfica RTX 3060",
+      descripcion: "Tarjeta gráfica de gama media-alta",
+      precio: 399.99,
+      categoria_id: 2,
+      categoria_nombre: "Tarjetas Gráficas"
+    }
+  ];
 }
 
 // Prompt del sistema
@@ -44,7 +49,7 @@ const systemPrompt = `Eres un experto asesor en ensamblaje de PCs. Tu objetivo e
 
 Instrucciones:
 1. Pregunta al usuario sobre su presupuesto y el uso que le dará a la PC
-2. Recomienda componentes basándote en los componentes disponibles en la base de datos
+2. Recomienda componentes basándote en los componentes disponibles
 3. Explica por qué recomiendas cada componente
 4. Mantén un tono amigable y profesional
 5. Si no hay componentes disponibles en alguna categoría, indícalo claramente
@@ -53,14 +58,13 @@ Recuerda que debes recomendar componentes que:
 - Sean compatibles entre sí
 - Se ajusten al presupuesto del usuario
 - Sean adecuados para el uso que le dará a la PC
-- Estén disponibles en la base de datos
 
 Los componentes disponibles son:`;
 
 // Función para obtener respuesta del chatbot
 export async function getChatbotResponse(message: string, history: { role: string; content: string }[] = []) {
   try {
-    // Obtener componentes de la base de datos
+    // Obtener componentes
     const componentes = await getComponentesFromDB();
     
     // Organizar componentes por categoría

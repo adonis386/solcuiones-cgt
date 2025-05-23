@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, use, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Categoria {
@@ -32,16 +32,7 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchCategorias();
-    if (resolvedParams.id !== 'nuevo') {
-      fetchComponente();
-    } else {
-      setIsLoading(false);
-    }
-  }, [resolvedParams.id]);
-
-  const fetchCategorias = async () => {
+  const fetchCategorias = useCallback(async () => {
     try {
       const response = await fetch('/api/categorias');
       const data = await response.json();
@@ -52,9 +43,9 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
       console.error('Error al cargar categorías:', error);
       setError('Error al cargar las categorías');
     }
-  };
+  }, []);
 
-  const fetchComponente = async () => {
+  const fetchComponente = useCallback(async () => {
     try {
       const response = await fetch(`/api/componentes/${resolvedParams.id}`);
       const data = await response.json();
@@ -73,7 +64,16 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
       setError('Error al cargar el componente');
     }
     setIsLoading(false);
-  };
+  }, [resolvedParams.id]);
+
+  useEffect(() => {
+    fetchCategorias();
+    if (resolvedParams.id !== 'nuevo') {
+      fetchComponente();
+    } else {
+      setIsLoading(false);
+    }
+  }, [resolvedParams.id, fetchCategorias, fetchComponente]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

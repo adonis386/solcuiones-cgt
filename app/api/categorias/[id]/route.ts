@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 type RouteContext = {
   params: {
@@ -7,13 +8,22 @@ type RouteContext = {
   };
 };
 
+interface CountResult extends RowDataPacket {
+  count: number;
+}
+
+interface Categoria extends RowDataPacket {
+  id: number;
+  nombre: string;
+}
+
 export async function DELETE(
   request: NextRequest,
   context: RouteContext
 ) {
   try {
     // Primero verificar si hay componentes asociados
-    const [componentes] = await pool.query(
+    const [componentes] = await pool.query<CountResult[]>(
       'SELECT COUNT(*) as count FROM componentes WHERE categoria_id = ?',
       [context.params.id]
     );
@@ -46,7 +56,7 @@ export async function GET(
   context: RouteContext
 ) {
   try {
-    const [rows] = await pool.query(
+    const [rows] = await pool.query<Categoria[]>(
       'SELECT * FROM categorias WHERE id = ?',
       [context.params.id]
     );
@@ -82,7 +92,7 @@ export async function PUT(
       );
     }
 
-    const [result] = await pool.query(
+    const [result] = await pool.query<ResultSetHeader>(
       'UPDATE categorias SET nombre = ? WHERE id = ?',
       [nombre, context.params.id]
     );

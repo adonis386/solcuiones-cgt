@@ -26,18 +26,34 @@ Cuando el usuario te pregunte, responde de manera natural y conversacional, como
 
 export async function POST(request: Request) {
   try {
-    const { message, presupuesto, history } = await request.json();
+    const { message, presupuesto, history, componentes } = await request.json();
 
-    // Preparar el historial de la conversación
+    // Formatear los datos de los componentes para el contexto del modelo
+    let inventoryContext = "Inventario de componentes disponibles:\n\n";
+    for (const categoryId in componentes) {
+      if (componentes.hasOwnProperty(categoryId)) {
+        const categoryComponents = componentes[categoryId];
+        if (categoryComponents.length > 0) {
+          // Asumir que el primer componente tiene el nombre de la categoría
+          inventoryContext += `Categoría: ${categoryComponents[0].categoria_nombre}\n`;
+          categoryComponents.forEach((comp: any) => {
+            inventoryContext += `- ${comp.nombre} ($${comp.precio})\n  Descripción: ${comp.descripcion}\n`;
+          });
+          inventoryContext += '\n'; // Agregar una línea en blanco entre categorías
+        }
+      }
+    }
+
+    // Preparar el historial de la conversación, incluyendo el inventario como primer mensaje de contexto
     const chatHistory = history?.map((msg: { role: string; content: string }) => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: msg.content }]
     })) || [];
 
-    // Crear el contexto de la conversación
     const chat = model.startChat({
       history: [
         { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
+        { role: 'user', parts: [{ text: inventoryContext }] }, // Incluir el inventario como contexto
         ...chatHistory
       ],
       generationConfig: {
@@ -50,7 +66,9 @@ export async function POST(request: Request) {
 
     // Preparar el mensaje con el contexto del presupuesto
     const userMessage = presupuesto 
-      ? `[Presupuesto del usuario: $${presupuesto.toLocaleString()}]\n\n${message}`
+      ? `[Presupuesto del usuario: $${presupuesto.toLocaleString()}]
+
+${message}`
       : message;
 
     // Obtener respuesta de Gemini
@@ -67,7 +85,7 @@ export async function POST(request: Request) {
     console.error('Error en el chat:', error);
     return NextResponse.json({
       success: false,
-      error: 'Error al procesar el mensaje. Por favor, verifica que la API key de Gemini esté configurada correctamente.'
+      error: 'Error al procesar el mensaje.'
     }, { status: 500 });
   }
 } 

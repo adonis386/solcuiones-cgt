@@ -3,14 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
+type Props = {
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default function EditarCategoria({ params }: PageProps) {
+export default function EditarCategoria({ params }: Props) {
   const router = useRouter();
   const [nombre, setNombre] = useState('');
   const [isLoading, setIsLoading] = useState(true);

@@ -388,7 +388,7 @@ export default function ArmarPC() {
             </div>
             {Object.keys(componentesSeleccionados).length === categorias.length && (
               <a
-                href={`https://wa.me/584121234567?text=${getWhatsAppMessage()}`}
+                href={`https://wa.me/584242533942?text=${getWhatsAppMessage()}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"

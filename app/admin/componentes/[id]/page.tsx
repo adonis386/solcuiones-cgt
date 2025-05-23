@@ -1,20 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
 interface Categoria {
   id: number;
   nombre: string;
 }
 
-type Props = {
-  params: { id: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
-
-export default function EditarComponente({ params }: Props) {
+export default function EditarComponente() {
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [formData, setFormData] = useState({
     nombre: '',
@@ -42,7 +39,7 @@ export default function EditarComponente({ params }: Props) {
 
     const fetchComponente = async () => {
       try {
-        const response = await fetch(`/api/componentes/${params.id}`);
+        const response = await fetch(`/api/componentes/${id}`);
         const data = await response.json();
         if (data.success) {
           setFormData({
@@ -61,20 +58,20 @@ export default function EditarComponente({ params }: Props) {
     };
 
     fetchCategorias();
-    if (params.id !== 'nuevo') {
+    if (id !== 'nuevo') {
       fetchComponente();
     } else {
       setIsLoading(false);
     }
-  }, [params.id]);
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      const method = params.id === 'nuevo' ? 'POST' : 'PUT';
-      const response = await fetch(`/api/componentes${params.id === 'nuevo' ? '' : `/${params.id}`}`, {
+      const method = id === 'nuevo' ? 'POST' : 'PUT';
+      const response = await fetch(`/api/componentes${id === 'nuevo' ? '' : `/${id}`}`, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -120,7 +117,7 @@ export default function EditarComponente({ params }: Props) {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 p-6">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-cyan-400 mb-8">
-          {params.id === 'nuevo' ? 'Nuevo Componente' : 'Editar Componente'}
+          {id === 'nuevo' ? 'Nuevo Componente' : 'Editar Componente'}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">

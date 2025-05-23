@@ -6,9 +6,10 @@ const nextConfig: NextConfig = {
     DATABASE_URL: process.env.DATABASE_URL,
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
   },
-  // Configuración para manejar la API de LangChain
   experimental: {
-    serverActions: true,
+    serverActions: {
+      enabled: true
+    },
   },
 };
 

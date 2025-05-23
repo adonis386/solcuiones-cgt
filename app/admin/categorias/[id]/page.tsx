@@ -10,25 +10,15 @@ interface Categoria {
 
 export default function EditarCategoria({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [categoria, setCategoria] = useState<Categoria | null>(null);
   const [nombre, setNombre] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (params.id !== 'nueva') {
-      fetchCategoria();
-    } else {
-      setIsLoading(false);
-    }
-  }, [params.id, fetchCategoria]);
 
   const fetchCategoria = useCallback(async () => {
     try {
       const response = await fetch(`/api/categorias/${params.id}`);
       const data = await response.json();
       if (data.success) {
-        setCategoria(data.data);
         setNombre(data.data.nombre);
       }
     } catch (error) {
@@ -37,6 +27,14 @@ export default function EditarCategoria({ params }: { params: { id: string } }) 
     }
     setIsLoading(false);
   }, [params.id]);
+
+  useEffect(() => {
+    if (params.id !== 'nueva') {
+      fetchCategoria();
+    } else {
+      setIsLoading(false);
+    }
+  }, [params.id, fetchCategoria]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

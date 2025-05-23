@@ -1,5 +1,4 @@
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
-import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import pool from '@/lib/db';
 import { RowDataPacket } from 'mysql2';
 
@@ -10,6 +9,12 @@ interface Componente extends RowDataPacket {
   precio: number;
   categoria_id: number;
   categoria_nombre: string;
+}
+
+interface ComponenteResumen {
+  nombre: string;
+  descripcion: string;
+  precio: number;
 }
 
 // Configuración del modelo
@@ -59,7 +64,7 @@ export async function getChatbotResponse(message: string, history: { role: strin
     const componentes = await getComponentesFromDB();
     
     // Organizar componentes por categoría
-    const componentesPorCategoria = componentes.reduce((acc: Record<string, any[]>, comp) => {
+    const componentesPorCategoria = componentes.reduce((acc: Record<string, ComponenteResumen[]>, comp) => {
       if (!acc[comp.categoria_nombre]) {
         acc[comp.categoria_nombre] = [];
       }

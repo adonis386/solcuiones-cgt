@@ -3,6 +3,16 @@
 import React, { useState, useEffect } from 'react';
 import ComponenteCard from './ComponenteCard';
 
+interface Componente {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  categoria_id: number;
+  imagen_url: string;
+  categoria_nombre: string;
+}
+
 interface ComponentesModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -10,8 +20,8 @@ interface ComponentesModalProps {
     id: number;
     nombre: string;
   } | null;
-  onSelectComponente: (componente: any) => void;
-  componentesSeleccionados: Record<number, any>;
+  onSelectComponente: (componente: Componente) => void;
+  componentesSeleccionados: Record<number, Componente>;
 }
 
 export default function ComponentesModal({
@@ -21,30 +31,30 @@ export default function ComponentesModal({
   onSelectComponente,
   componentesSeleccionados
 }: ComponentesModalProps) {
-  const [componentes, setComponentes] = useState<any[]>([]);
+  const [componentes, setComponentes] = useState<Componente[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const fetchComponentes = async () => {
+      if (!categoria) return;
+      
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/componentes/categoria/${categoria.id}`);
+        const data = await response.json();
+        if (data.success) {
+          setComponentes(data.data);
+        }
+      } catch (error) {
+        console.error('Error al cargar componentes:', error);
+      }
+      setIsLoading(false);
+    };
+
     if (isOpen && categoria) {
       fetchComponentes();
     }
   }, [isOpen, categoria]);
-
-  const fetchComponentes = async () => {
-    if (!categoria) return;
-    
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/componentes/categoria/${categoria.id}`);
-      const data = await response.json();
-      if (data.success) {
-        setComponentes(data.data);
-      }
-    } catch (error) {
-      console.error('Error al cargar componentes:', error);
-    }
-    setIsLoading(false);
-  };
 
   if (!isOpen || !categoria) return null;
 

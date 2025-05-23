@@ -8,20 +8,10 @@ interface Categoria {
   nombre: string;
 }
 
-interface Componente {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  precio: number;
-  categoria_id: number;
-  imagen_url: string;
-}
-
 export default function EditarComponente({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const router = useRouter();
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [componente, setComponente] = useState<Componente | null>(null);
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -33,6 +23,39 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
   const [error, setError] = useState('');
 
   useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const response = await fetch('/api/categorias');
+        const data = await response.json();
+        if (data.success) {
+          setCategorias(data.data);
+        }
+      } catch (error) {
+        console.error('Error al cargar categorías:', error);
+        setError('Error al cargar las categorías');
+      }
+    };
+
+    const fetchComponente = async () => {
+      try {
+        const response = await fetch(`/api/componentes/${resolvedParams.id}`);
+        const data = await response.json();
+        if (data.success) {
+          setFormData({
+            nombre: data.data.nombre,
+            descripcion: data.data.descripcion,
+            precio: data.data.precio.toString(),
+            categoria_id: data.data.categoria_id.toString(),
+            imagen_url: data.data.imagen_url || ''
+          });
+        }
+      } catch (error) {
+        console.error('Error al cargar componente:', error);
+        setError('Error al cargar el componente');
+      }
+      setIsLoading(false);
+    };
+
     fetchCategorias();
     if (resolvedParams.id !== 'nuevo') {
       fetchComponente();
@@ -40,40 +63,6 @@ export default function EditarComponente({ params }: { params: Promise<{ id: str
       setIsLoading(false);
     }
   }, [resolvedParams.id]);
-
-  const fetchCategorias = async () => {
-    try {
-      const response = await fetch('/api/categorias');
-      const data = await response.json();
-      if (data.success) {
-        setCategorias(data.data);
-      }
-    } catch (error) {
-      console.error('Error al cargar categorías:', error);
-      setError('Error al cargar las categorías');
-    }
-  };
-
-  const fetchComponente = async () => {
-    try {
-      const response = await fetch(`/api/componentes/${resolvedParams.id}`);
-      const data = await response.json();
-      if (data.success) {
-        setComponente(data.data);
-        setFormData({
-          nombre: data.data.nombre,
-          descripcion: data.data.descripcion,
-          precio: data.data.precio.toString(),
-          categoria_id: data.data.categoria_id.toString(),
-          imagen_url: data.data.imagen_url || ''
-        });
-      }
-    } catch (error) {
-      console.error('Error al cargar componente:', error);
-      setError('Error al cargar el componente');
-    }
-    setIsLoading(false);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

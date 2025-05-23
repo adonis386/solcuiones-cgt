@@ -25,30 +25,30 @@ export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        if (activeTab === 'categorias') {
+          const response = await fetch('/api/test-db');
+          const data = await response.json();
+          if (data.success) {
+            setCategorias(data.data);
+          }
+        } else {
+          const response = await fetch('/api/componentes');
+          const data = await response.json();
+          if (data.success) {
+            setComponentes(data.data);
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar datos:', error);
+      }
+      setIsLoading(false);
+    };
+
     fetchData();
   }, [activeTab]);
-
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      if (activeTab === 'categorias') {
-        const response = await fetch('/api/test-db');
-        const data = await response.json();
-        if (data.success) {
-          setCategorias(data.data);
-        }
-      } else {
-        const response = await fetch('/api/componentes');
-        const data = await response.json();
-        if (data.success) {
-          setComponentes(data.data);
-        }
-      }
-    } catch (error) {
-      console.error('Error al cargar datos:', error);
-    }
-    setIsLoading(false);
-  };
 
   const handleDelete = async (id: number, type: 'categoria' | 'componente') => {
     if (!confirm('¿Estás seguro de que deseas eliminar este elemento?')) return;

@@ -1,15 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 
+type RouteContext = {
+  params: {
+    id: string;
+  };
+};
+
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     // Primero verificar si hay componentes asociados
     const [componentes] = await pool.query(
       'SELECT COUNT(*) as count FROM componentes WHERE categoria_id = ?',
-      [params.id]
+      [context.params.id]
     );
 
     if (componentes[0].count > 0) {
@@ -23,7 +29,7 @@ export async function DELETE(
     }
 
     // Si no hay componentes asociados, eliminar la categoría
-    await pool.query('DELETE FROM categorias WHERE id = ?', [params.id]);
+    await pool.query('DELETE FROM categorias WHERE id = ?', [context.params.id]);
     
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -37,12 +43,12 @@ export async function DELETE(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     const [rows] = await pool.query(
       'SELECT * FROM categorias WHERE id = ?',
-      [params.id]
+      [context.params.id]
     );
 
     if (!rows[0]) {
@@ -64,7 +70,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     const { nombre } = await request.json();
@@ -78,7 +84,7 @@ export async function PUT(
 
     const [result] = await pool.query(
       'UPDATE categorias SET nombre = ? WHERE id = ?',
-      [nombre, params.id]
+      [nombre, context.params.id]
     );
 
     if (result.affectedRows === 0) {
@@ -90,7 +96,7 @@ export async function PUT(
 
     return NextResponse.json({ 
       success: true, 
-      data: { id: params.id, nombre } 
+      data: { id: context.params.id, nombre } 
     });
   } catch (error) {
     console.error('Error al actualizar categoría:', error);

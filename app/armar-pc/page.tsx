@@ -109,7 +109,7 @@ export default function ArmarPC() {
         nombre: "Gigabyte A520M K V2",
         descripcion: "MATX Socket AM4, 2xDDR4-5100, 4xSATA, M.2, 2xPCIe, HD 7.1, 4xUSB, HDMI-VGA",
         precio: 60,
-        imagen_url: "/componentes/gigabyte-a520m-k.jpg",
+        imagen_url: "/componentes/gigabyte-a520m-k.webp",
         categoria_id: 3,
         categoria_nombre: "Placas Base"
       },
@@ -118,7 +118,7 @@ export default function ArmarPC() {
         nombre: "ECS B660HT-M22",
         descripcion: "MATX LGA1700, 2xDDR4-4600, 4xSATA, 6xUSB3.2+5xUSB2.0, 2xM.2, UHD, 4xPCIe, HDMI-VGA, Gen 14th-13th-12th",
         precio: 90,
-        imagen_url: "/componentes/ecs-b660ht-m22.jpg",
+        imagen_url: "/componentes/ecs-b660ht-m22.webp",
         categoria_id: 3,
         categoria_nombre: "Placas Base"
       },
@@ -127,7 +127,7 @@ export default function ArmarPC() {
         nombre: "MSI PRO Z790-A MAX WIFI",
         descripcion: "ATX Socket LGA1700, 4xDDR5-7800, 6xSATA, 4xM.2, 4xPCIe, 14xUSB, HDMI-DP, Gen 14th-13th-12th",
         precio: 285,
-        imagen_url: "/componentes/msi-z790-a.jpg",
+        imagen_url: "/componentes/msi-z790-a.webp",
         categoria_id: 3,
         categoria_nombre: "Placas Base"
       }
@@ -138,7 +138,7 @@ export default function ArmarPC() {
         nombre: "Corsair Vengeance RGB 16GB",
         descripcion: "Memoria DDR4 3200MHz, RGB, UDIMM",
         precio: 36,
-        imagen_url: "/componentes/corsair-vengeance-rgb.jpg",
+        imagen_url: "/componentes/corsair-vengeance-rgb.webp",
         categoria_id: 4,
         categoria_nombre: "Memoria RAM"
       },
@@ -147,7 +147,7 @@ export default function ArmarPC() {
         nombre: "XPG Gammix D30 8GB",
         descripcion: "Memoria DDR4 3200MHz, Con disipador, UDIMM",
         precio: 23,
-        imagen_url: "/componentes/xpg-gammix-d30.jpg",
+        imagen_url: "/componentes/xpg-gammix-d30.webp",
         categoria_id: 4,
         categoria_nombre: "Memoria RAM"
       }
@@ -158,7 +158,7 @@ export default function ArmarPC() {
         nombre: "XPG Gammix S60 512GB",
         descripcion: "SSD M.2 2280, PCIe 4x4, 5000MB/s",
         precio: 52,
-        imagen_url: "/componentes/xpg-gammix-s60.jpg",
+        imagen_url: "/componentes/xpg-gammix-s60.webp",
         categoria_id: 5,
         categoria_nombre: "Almacenamiento"
       },
@@ -167,7 +167,7 @@ export default function ArmarPC() {
         nombre: "ADATA Legend 710 256GB",
         descripcion: "SSD M.2 2280, PCIe Gen3 x4",
         precio: 24,
-        imagen_url: "/componentes/adata-legend-710.jpg",
+        imagen_url: "/componentes/adata-legend-710.webp",
         categoria_id: 5,
         categoria_nombre: "Almacenamiento"
       }
@@ -178,7 +178,7 @@ export default function ArmarPC() {
         nombre: "Azza 750W Gaming ATX",
         descripcion: "Fuente 750W 80+ Bronze, 12V, 100-240V, Fan ARGB, Negro",
         precio: 62,
-        imagen_url: "/componentes/azza-750w.jpg",
+        imagen_url: "/componentes/azza-750w.webp",
         categoria_id: 6,
         categoria_nombre: "Fuentes de Poder"
       }
@@ -189,7 +189,7 @@ export default function ArmarPC() {
         nombre: "MSI MAG Shield M301",
         descripcion: "MTX, 3xUSB, 1HD Audio, 1 Fan 120mm, Negro",
         precio: 38,
-        imagen_url: "/componentes/msi-mag-shield.jpg",
+        imagen_url: "/componentes/msi-mag-shield.webp",
         categoria_id: 7,
         categoria_nombre: "Gabinetes"
       },
@@ -198,7 +198,7 @@ export default function ArmarPC() {
         nombre: "Gamemax Gaming Diamond COC",
         descripcion: "Mid Tower, 2xUSB 3.0, 1HD Audio, Fan COC 14cm, ARGB, Lateral Vidrio Temp, Negro",
         precio: 65,
-        imagen_url: "/componentes/gamemax-diamond.jpg",
+        imagen_url: "/componentes/gamemax-diamond.webp",
         categoria_id: 7,
         categoria_nombre: "Gabinetes"
       },
@@ -207,7 +207,7 @@ export default function ArmarPC() {
         nombre: "Cooler Master HAF500",
         descripcion: "Mid Tower, 2xUSB3.2, Type C, HD Audio, 2xFan 20cm+2xFan 12cm, ARGB, Frontal Mall, Negro",
         precio: 167,
-        imagen_url: "/componentes/cooler-master-haf500.jpg",
+        imagen_url: "/componentes/cooler-master-haf500.webp",
         categoria_id: 7,
         categoria_nombre: "Gabinetes"
       }
@@ -218,7 +218,7 @@ export default function ArmarPC() {
         nombre: "Gamemax Gamma 600",
         descripcion: "Cooler ARGB 4 pines, 230W TDP, Compatible Intel LGA2066 y AMD AM4",
         precio: 50,
-        imagen_url: "/componentes/gamemax-gamma-600.jpg",
+        imagen_url: "/componentes/gamemax-gamma-600.webp",
         categoria_id: 8,
         categoria_nombre: "Refrigeración"
       }
@@ -253,16 +253,30 @@ export default function ArmarPC() {
 
   const getWhatsAppMessage = () => {
     if (Object.keys(componentesSeleccionados).length === 0) {
-      return "Hola soluciones CGT! Estoy interesado en armar una PC.";
+      return "Hola soluciones CGT! Estoy interesado en armar una PC. 🛠️";
     }
 
-    let message = "Hola soluciones CGT! Quiero armar una PC con:\n\n";
+    let message = "👋 ¡Hola soluciones CGT! \n\n";
+    message += "Quiero armar una PC con la siguiente configuración: \n\n";
 
     Object.values(componentesSeleccionados).forEach(comp => {
-      message += `- ${comp.categoria_nombre}: ${comp.nombre} ($${comp.precio})\n`;
+      let icon = '';
+      switch (comp.categoria_id) {
+        case 1: icon = '🧠'; break; // Procesador
+        case 2: icon = '🎮'; break; // Tarjeta Gráfica
+        case 3: icon = '🔌'; break; // Placa Base
+        case 4: icon = '💾'; break; // Memoria RAM
+        case 5: icon = '💽'; break; // Almacenamiento
+        case 6: icon = '🔋'; break; // Fuentes de Poder
+        case 7: icon = '🏢'; break; // Gabinete
+        case 8: icon = '❄️'; break; // Refrigeración
+        default: icon = '✨';
+      }
+      message += `${icon} ${comp.categoria_nombre}: ${comp.nombre} ($${comp.precio})\n`;
     });
 
-    message += `\nPresupuesto total estimado: $${presupuestoTotal.toLocaleString()}`;;
+    message += `\n💰 Presupuesto total estimado: $${presupuestoTotal.toLocaleString()}`;;
+    message += `\n\n¡Espero su confirmación y los próximos pasos! 👍`;
 
     return encodeURIComponent(message);
   };

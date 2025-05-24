@@ -98,7 +98,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ currentTheme, setTheme, themes }}>
-      <div className={`min-h-screen ${currentTheme.background}`}>
+      <div className="min-h-screen">
         {children}
       </div>
     </ThemeContext.Provider>

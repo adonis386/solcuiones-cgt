@@ -20,30 +20,23 @@ export default function ThemeSelector() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200">
-          <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Seleccionar tema</h3>
-            <div className="space-y-2">
-              {themes.map((theme) => (
-                <button
-                  key={theme.name}
-                  onClick={() => {
-                    setTheme(theme.name);
-                    setIsOpen(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                    currentTheme.name === theme.name
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <div className={`w-4 h-4 rounded-full bg-gradient-to-r ${theme.primary}`} />
-                    <span>{theme.description}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
+        <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden">
+          <div className="max-h-[60vh] overflow-y-auto">
+            {themes.map((theme) => (
+              <button
+                key={theme.id}
+                onClick={() => {
+                  setTheme(theme.id);
+                  setIsOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 flex items-center gap-2 hover:bg-gray-700 transition-colors ${
+                  currentTheme.id === theme.id ? 'bg-gray-700' : ''
+                }`}
+              >
+                <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${theme.primary} ${theme.secondary}`} />
+                <span className="text-sm text-white">{theme.name}</span>
+              </button>
+            ))}
           </div>
         </div>
       )}

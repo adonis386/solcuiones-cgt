@@ -2,16 +2,19 @@
 
 import React from "react";
 import Link from "next/link";
+import { useTheme } from "./components";
 
 export default function Home() {
+  const { currentTheme } = useTheme();
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-600 via-purple-500 to-purple-400 dark:from-purple-700 dark:via-purple-600 dark:to-purple-500 p-6">
+    <div className={`min-h-screen flex flex-col items-center justify-center bg-gradient-to-br ${currentTheme.primary} ${currentTheme.secondary} p-6`}>
       <div className="text-center space-y-8 max-w-2xl">
-        <h1 className="text-4xl sm:text-5xl font-bold text-white animate-slide-down">
+        <h1 className={`text-4xl sm:text-5xl font-bold ${currentTheme.text} animate-slide-down`}>
           Bienvenido a Soluciones CGT
         </h1>
         
-        <p className="text-xl text-white/90 animate-slide-up delay-200">
+        <p className={`text-xl ${currentTheme.text} animate-slide-up delay-200`}>
           Arma tu PC ideal con ayuda de la inteligencia artificial
         </p>
 

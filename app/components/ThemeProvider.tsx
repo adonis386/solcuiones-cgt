@@ -3,66 +3,75 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Theme = {
+  id: string;
   name: string;
   primary: string;
   secondary: string;
   accent: string;
-  background: string;
   text: string;
   description: string;
 };
 
 const themes: Theme[] = [
   {
-    name: "default",
-    primary: "from-purple-600 via-purple-500 to-purple-400",
-    secondary: "from-purple-700 via-purple-600 to-purple-500",
+    id: "default",
+    name: "Default",
+    primary: "from-purple-600",
+    secondary: "to-purple-400",
     accent: "bg-purple-700",
-    background: "bg-white",
     text: "text-white",
     description: "Tema predeterminado"
   },
   {
-    name: "protanopia",
-    primary: "from-blue-600 via-blue-500 to-blue-400",
-    secondary: "from-blue-700 via-blue-600 to-blue-500",
-    accent: "bg-blue-700",
-    background: "bg-white",
-    text: "text-white",
-    description: "Tema para Protanopía (dificultad para distinguir rojo-verde)"
-  },
-  {
-    name: "deuteranopia",
-    primary: "from-cyan-600 via-cyan-500 to-cyan-400",
-    secondary: "from-cyan-700 via-cyan-600 to-cyan-500",
-    accent: "bg-cyan-700",
-    background: "bg-white",
-    text: "text-white",
-    description: "Tema para Deuteranopía (dificultad para distinguir verde-rojo)"
-  },
-  {
-    name: "tritanopia",
-    primary: "from-amber-600 via-amber-500 to-amber-400",
-    secondary: "from-amber-700 via-amber-600 to-amber-500",
-    accent: "bg-amber-700",
-    background: "bg-white",
-    text: "text-white",
-    description: "Tema para Tritanopía (dificultad para distinguir azul-amarillo)"
-  },
-  {
-    name: "high-contrast",
-    primary: "from-gray-800 via-gray-700 to-gray-600",
-    secondary: "from-gray-900 via-gray-800 to-gray-700",
+    id: "dark",
+    name: "Dark",
+    primary: "from-gray-800",
+    secondary: "to-gray-900",
     accent: "bg-gray-900",
-    background: "bg-white",
     text: "text-white",
-    description: "Tema de alto contraste"
+    description: "Tema oscuro"
+  },
+  {
+    id: "light",
+    name: "Light",
+    primary: "from-blue-100",
+    secondary: "to-blue-200",
+    accent: "bg-blue-500",
+    text: "text-gray-900",
+    description: "Tema claro"
+  },
+  {
+    id: "protanopia",
+    name: "Protanopia",
+    primary: "from-blue-600",
+    secondary: "to-blue-400",
+    accent: "bg-blue-700",
+    text: "text-white",
+    description: "Tema para Protanopía"
+  },
+  {
+    id: "deuteranopia",
+    name: "Deuteranopia",
+    primary: "from-cyan-600",
+    secondary: "to-cyan-400",
+    accent: "bg-cyan-700",
+    text: "text-white",
+    description: "Tema para Deuteranopía"
+  },
+  {
+    id: "tritanopia",
+    name: "Tritanopia",
+    primary: "from-amber-600",
+    secondary: "to-amber-400",
+    accent: "bg-amber-700",
+    text: "text-white",
+    description: "Tema para Tritanopía"
   }
 ];
 
 type ThemeContextType = {
   currentTheme: Theme;
-  setTheme: (themeName: string) => void;
+  setTheme: (themeId: string) => void;
   themes: Theme[];
 };
 
@@ -74,16 +83,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
-      const theme = themes.find(t => t.name === savedTheme);
+      const theme = themes.find(t => t.id === savedTheme);
       if (theme) setCurrentTheme(theme);
     }
   }, []);
 
-  const setTheme = (themeName: string) => {
-    const theme = themes.find(t => t.name === themeName);
+  const setTheme = (themeId: string) => {
+    const theme = themes.find(t => t.id === themeId);
     if (theme) {
       setCurrentTheme(theme);
-      localStorage.setItem('theme', themeName);
+      localStorage.setItem('theme', themeId);
     }
   };
 

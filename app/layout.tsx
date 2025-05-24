@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeProvider } from "./components";
+import ThemeSelector from "./components/ThemeSelector";
 
 export const metadata: Metadata = {
   title: "Soluciones CGT",
@@ -13,7 +15,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className="font-goldman">{children}</body>
+      <body className="font-goldman">
+        <ThemeProvider>
+          <div className="relative">
+            <ThemeSelector />
+            {children}
+          </div>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

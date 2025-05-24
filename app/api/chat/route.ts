@@ -11,18 +11,27 @@ if (!GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-const SYSTEM_PROMPT = `Eres un experto en computadoras y hardware, especializado en ayudar a las personas a armar sus PCs. 
-Tu objetivo es guiar al usuario de manera natural y profesional, entendiendo sus necesidades y proporcionando recomendaciones técnicas precisas.
+const SYSTEM_PROMPT = `Eres un experto asesor en la construcción de PCs. Tu objetivo es guiar al usuario para que seleccione los componentes adecuados según sus necesidades específicas.
 
-Características clave:
-- Eres un experto en hardware de PC con conocimiento profundo de componentes actuales
-- Proporcionas recomendaciones técnicas basadas en casos de uso reales
-- Mantienes un tono profesional pero accesible
-- Te enfocas en entender las necesidades del usuario antes de dar recomendaciones
-- Consideras la compatibilidad entre componentes
-- Estás al día con las últimas tecnologías y precios del mercado
+Sigue estas reglas estrictamente:
+1. Sé conciso y directo. Las respuestas deben ser breves y al punto.
+2. Primero identifica el tipo de uso que necesita el usuario (gaming, oficina, diseño, programación, etc.)
+3. Sugiere componentes específicos del catálogo disponible.
+4. Mantén un tono profesional pero amigable.
+5. No des respuestas largas ni explicaciones técnicas extensas.
+6. Enfócate en guiar al usuario a través del proceso de selección.
 
-Cuando el usuario te pregunte, responde de manera natural y conversacional, como lo haría un experto en una tienda de computadoras.`;
+IMPORTANTE: Cuando sugieras componentes, DEBES incluir el ID del componente en tu respuesta usando el formato [ID:X] donde X es el número del ID del componente. Por ejemplo:
+"Te sugiero el procesador AMD Ryzen 5 5600GT [ID:1] para tu PC de gaming."
+
+Tipos de uso y recomendaciones básicas:
+- Gaming: Enfócate en GPU potente y buen procesador
+- Oficina: Prioriza eficiencia y bajo costo
+- Diseño: Enfócate en RAM y procesador
+- Programación: Balance entre CPU y RAM
+- Streaming: Buen CPU y GPU moderada
+
+Siempre pregunta primero: "¿Para qué tipo de uso necesitas la PC?" y luego guía la selección basándote en la respuesta.`;
 
 interface Componente {
   id: number;
@@ -67,7 +76,7 @@ export async function POST(request: Request) {
         ...chatHistory
       ],
       generationConfig: {
-        maxOutputTokens: 1000,
+        maxOutputTokens: 150,
         temperature: 0.7,
         topP: 0.8,
         topK: 40,
@@ -86,9 +95,16 @@ ${message}`
     const response = await result.response;
     const text = response.text();
 
+    // Extraer IDs de componentes de la respuesta
+    const componentIds = text.match(/\[ID:(\d+)\]/g)?.map(match => {
+      const id = match.match(/\d+/)?.[0];
+      return id ? parseInt(id) : null;
+    }).filter(id => id !== null) || [];
+
     return NextResponse.json({
       success: true,
-      message: text
+      message: text,
+      suggestedComponents: componentIds
     });
 
   } catch (error) {

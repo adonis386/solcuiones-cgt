@@ -15,12 +15,18 @@ export default function Home() {
           Arma tu PC ideal con ayuda de la inteligencia artificial
         </p>
 
-        <div className="animate-fade-in delay-500">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in delay-500">
           <Link
             href="/armar-pc"
             className="inline-block px-12 py-4 bg-white text-purple-600 rounded-lg font-semibold text-lg hover:bg-purple-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
             Armar mi PC
+          </Link>
+          <Link
+            href="/pcs-prearmadas"
+            className="inline-block px-12 py-4 bg-purple-700 text-white rounded-lg font-semibold text-lg hover:bg-purple-600 transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
+          >
+            Ver PCs Pre-armadas
           </Link>
         </div>
       </div>

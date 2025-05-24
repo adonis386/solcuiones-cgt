@@ -473,18 +473,21 @@ export default function ArmarPC() {
       </div>
 
       {/* ChatBot Button/Interface */}
-      <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2">
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
         {!isChatBotOpen ? (
           <>
-            <span className="text-white text-sm font-semibold bg-gray-800/80 backdrop-blur-sm rounded-lg p-2 shadow-lg animate-fade-in delay-500">Asistente IA para tu PC</span>
-            <button
-              onClick={() => setIsChatBotOpen(true)}
-              className="bg-purple-700 text-white p-4 rounded-full shadow-lg hover:bg-purple-600 transition-colors animate-bounce-slow"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="white" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-              </svg>
-            </button>
+            <span className="sm:hidden text-white text-sm font-semibold bg-gray-800/80 backdrop-blur-sm rounded-lg p-2 shadow-lg animate-fade-in delay-500">Asistente IA para tu PC</span>
+            <div className="flex items-center gap-2">
+              <span className="hidden sm:block text-white text-sm font-semibold bg-gray-800/80 backdrop-blur-sm rounded-lg p-2 shadow-lg animate-fade-in delay-500">Asistente IA para tu PC</span>
+              <button
+                onClick={() => setIsChatBotOpen(true)}
+                className="bg-purple-700 text-white p-4 rounded-full shadow-lg hover:bg-purple-600 transition-colors animate-bounce-slow"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="white" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+              </button>
+            </div>
           </>
         ) : (
           <div className="bg-gray-900/95 backdrop-blur-md rounded-xl shadow-2xl w-96 border border-gray-700">

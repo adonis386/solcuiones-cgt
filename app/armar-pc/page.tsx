@@ -41,6 +41,7 @@ export default function ArmarPC() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [tienePresupuesto, setTienePresupuesto] = useState<boolean | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Datos estáticos de categorías
@@ -249,6 +250,22 @@ export default function ArmarPC() {
     });
   };
 
+  const handleNextComponent = () => {
+    if (!categoriaSeleccionada) return;
+    
+    // Encontrar el índice de la categoría actual
+    const currentIndex = categorias.findIndex(cat => cat.id === categoriaSeleccionada.id);
+    
+    // Si hay una siguiente categoría, seleccionarla
+    if (currentIndex < categorias.length - 1) {
+      const nextCategoria = categorias[currentIndex + 1];
+      setCategoriaSeleccionada(nextCategoria);
+    } else {
+      // Si es la última categoría, cerrar el modal
+      setIsModalOpen(false);
+    }
+  };
+
   useEffect(() => {
     // Calcular presupuesto total
     const total = Object.values(componentesSeleccionados).reduce(
@@ -395,6 +412,17 @@ export default function ArmarPC() {
   return (
     <div className={`min-h-screen flex flex-col items-center bg-gradient-to-br ${currentTheme.primary} dark:${currentTheme.secondary} p-6 pb-32`}>
       <ThemeSelector />
+      <div className="w-full max-w-2xl flex justify-between items-center mb-8">
+        <a
+          href="/"
+          className="flex items-center gap-2 text-white hover:text-purple-300 transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span className="hidden sm:inline">Volver al inicio</span>
+        </a>
+      </div>
       <h2 className={`text-3xl sm:text-4xl font-bold ${currentTheme.text} mt-8 mb-4 text-center animate-fade-in`}>
         Arma tu PC
       </h2>
@@ -405,20 +433,62 @@ export default function ArmarPC() {
       {/* Presupuesto Input */}
       <div className="w-full max-w-md mb-12 animate-fade-in delay-200">
         <div className={`bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20`}>
-          <label htmlFor="presupuesto" className={`block ${currentTheme.text} mb-2`}>
-            ¿Cuál es tu presupuesto?
-          </label>
-          <div className="relative">
-            <span className={`absolute left-3 top-1/2 -translate-y-1/2 ${currentTheme.text}`}>$</span>
-            <input
-              type="text"
-              id="presupuesto"
-              value={presupuestoObjetivo === '' ? '' : presupuestoObjetivo.toLocaleString()}
-              onChange={handlePresupuestoChange}
-              placeholder="Ingresa tu presupuesto"
-              className={`w-full pl-8 pr-4 py-2 bg-white/5 border border-white/20 rounded-lg ${currentTheme.text} placeholder-white/50 focus:outline-none focus:border-white`}
-            />
-          </div>
+          {tienePresupuesto === null ? (
+            <div className="space-y-4">
+              <label className={`block ${currentTheme.text} mb-2`}>
+                ¿Tienes un presupuesto en mente?
+              </label>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setTienePresupuesto(true)}
+                  className="flex-1 bg-purple-700 hover:bg-purple-600 text-white rounded-lg py-2 transition-colors"
+                >
+                  Sí
+                </button>
+                <button
+                  onClick={() => setTienePresupuesto(false)}
+                  className="flex-1 bg-gray-700 hover:bg-gray-600 text-white rounded-lg py-2 transition-colors"
+                >
+                  No
+                </button>
+              </div>
+            </div>
+          ) : tienePresupuesto ? (
+            <div className="space-y-4">
+              <label htmlFor="presupuesto" className={`block ${currentTheme.text} mb-2`}>
+                ¿Cuál es tu presupuesto?
+              </label>
+              <div className="relative">
+                <span className={`absolute left-3 top-1/2 -translate-y-1/2 ${currentTheme.text}`}>$</span>
+                <input
+                  type="text"
+                  id="presupuesto"
+                  value={presupuestoObjetivo === '' ? '' : presupuestoObjetivo.toLocaleString()}
+                  onChange={handlePresupuestoChange}
+                  placeholder="Ingresa tu presupuesto"
+                  className={`w-full pl-8 pr-4 py-2 bg-white/5 border border-white/20 rounded-lg ${currentTheme.text} placeholder-white/50 focus:outline-none focus:border-white`}
+                />
+              </div>
+              <button
+                onClick={() => setTienePresupuesto(null)}
+                className="text-white/70 hover:text-white text-sm transition-colors"
+              >
+                Cambiar respuesta
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <p className={`${currentTheme.text}`}>
+                No hay problema. Te ayudaremos a encontrar la mejor configuración según tus necesidades.
+              </p>
+              <button
+                onClick={() => setTienePresupuesto(null)}
+                className="text-white/70 hover:text-white text-sm transition-colors"
+              >
+                Cambiar respuesta
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -457,6 +527,7 @@ export default function ArmarPC() {
         onSelectComponente={handleSelectComponente}
         componentesSeleccionados={componentesSeleccionados}
         componentes={categoriaSeleccionada ? componentesEstaticos[categoriaSeleccionada.id] || [] : []}
+        onNext={handleNextComponent}
       />
 
       {/* Presupuesto Total */}

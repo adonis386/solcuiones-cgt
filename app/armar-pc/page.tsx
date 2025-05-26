@@ -5,6 +5,7 @@ import ComponentesModal from "../components/ComponentesModal";
 import Image from "next/image";
 import { useTheme } from '../components/ThemeProvider';
 import ThemeSelector from '../components/ThemeSelector';
+import Link from 'next/link';
 
 interface Categoria {
   id: number;
@@ -413,15 +414,12 @@ export default function ArmarPC() {
     <div className={`min-h-screen flex flex-col items-center bg-gradient-to-br ${currentTheme.primary} dark:${currentTheme.secondary} p-6 pb-32`}>
       <ThemeSelector />
       <div className="w-full max-w-2xl flex justify-between items-center mb-8">
-        <a
-          href="/"
-          className="flex items-center gap-2 text-white hover:text-purple-300 transition-colors"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <Link href="/" className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-100 rounded-lg transition-colors">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           <span className="hidden sm:inline">Volver al inicio</span>
-        </a>
+        </Link>
       </div>
       <h2 className={`text-3xl sm:text-4xl font-bold ${currentTheme.text} mt-8 mb-4 text-center animate-fade-in`}>
         Arma tu PC
